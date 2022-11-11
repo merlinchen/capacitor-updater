@@ -26,7 +26,8 @@ public class CapacitorUpdaterPlugin: CAPPlugin {
     private var taskRunning = false
 
     override public func load() {
-        let allowEmulatorProd = getConfig().getBoolean("allowEmulatorProd", true)
+        let allowEmulatorProd = (getConfigValue("allowEmulatorProd") as? Bool) ?? true
+//        let allowEmulatorProd = getConfig().getBoolean("allowEmulatorProd", true)
         if (!allowEmulatorProd && self.isEmulator() && (self.isAppStoreReceiptSandbox() || self.hasEmbeddedMobileProvision())) {
             return
         }
@@ -36,21 +37,31 @@ public class CapacitorUpdaterPlugin: CAPPlugin {
         } catch {
             print("\(self.implementation.TAG) Cannot get version native \(currentVersionNative)")
         }
-        autoDeleteFailed = getConfig().getBoolean("autoDeleteFailed", true)
-        autoDeletePrevious = getConfig().getBoolean("autoDeletePrevious", true)
-        updateUrl = getConfig().getString("updateUrl", CapacitorUpdaterPlugin.updateUrlDefault)!
-        autoUpdate = getConfig().getBoolean("autoUpdate", true)
-        appReadyTimeout = getConfig().getInt("appReadyTimeout", 10000)
-        resetWhenUpdate = getConfig().getBoolean("resetWhenUpdate", true)
+        
+        autoDeleteFailed = (getConfigValue("autoDeleteFailed") as? Bool) ?? true
+        autoDeletePrevious = (getConfigValue("autoDeletePrevious") as? Bool) ?? true
+        updateUrl = (getConfigValue("updateUrl") as? String) ?? CapacitorUpdaterPlugin.updateUrlDefault
+        autoUpdate = (getConfigValue("autoUpdate") as? Bool) ?? true
+        appReadyTimeout = (getConfigValue("appReadyTimeout") as? Int) ?? 10000
+        resetWhenUpdate = (getConfigValue("resetWhenUpdate") as? Bool) ?? true
+
+//      autoDeleteFailed = getConfig().getBoolean("autoDeleteFailed", true)
+//      autoDeletePrevious = getConfig().getBoolean("autoDeletePrevious", true)
+//      updateUrl = getConfig().getString("updateUrl", CapacitorUpdaterPlugin.updateUrlDefault)!
+//      autoUpdate = getConfig().getBoolean("autoUpdate", true)
+//      appReadyTimeout = getConfig().getInt("appReadyTimeout", 10000)
+//      resetWhenUpdate = getConfig().getBoolean("resetWhenUpdate", true)
 
         implementation.appId = Bundle.main.bundleIdentifier ?? ""
         implementation.notifyDownload = notifyDownload
         let config = (self.bridge?.viewController as? CAPBridgeViewController)?.instanceDescriptor().legacyConfig
-        if config?["appId"] != nil {
-            implementation.appId = config?["appId"] as! String
-        }
-        implementation.statsUrl = getConfig().getString("statsUrl", CapacitorUpdaterPlugin.statsUrlDefault)!
-        implementation.channelUrl = getConfig().getString("channelUrl", CapacitorUpdaterPlugin.channelUrlDefault)!
+//        if config?["appId"] != nil {
+//            implementation.appId = config?["appId"] as! String
+//        }
+        implementation.statsUrl = (getConfigValue("statsUrl") as? String) ?? CapacitorUpdaterPlugin.statsUrlDefault
+        implementation.channelUrl = (getConfigValue("channelUrl") as? String) ?? CapacitorUpdaterPlugin.channelUrlDefault
+//      implementation.statsUrl = getConfig().getString("statsUrl", CapacitorUpdaterPlugin.statsUrlDefault)!
+//      implementation.channelUrl = getConfig().getString("channelUrl", CapacitorUpdaterPlugin.channelUrlDefault)!
         if resetWhenUpdate {
             self.cleanupObsoleteVersions()
         }

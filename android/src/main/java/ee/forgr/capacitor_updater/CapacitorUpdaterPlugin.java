@@ -2,6 +2,7 @@ package ee.forgr.capacitor_updater;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -91,7 +92,7 @@ public class CapacitorUpdaterPlugin extends Plugin implements Application.Activi
         }
 
         final CapConfig config = CapConfig.loadDefault(this.getActivity());
-        this.implementation.appId = config.getString("appId", "");
+        this.implementation.appId = this.getContext().getPackageName();
         this.implementation.statsUrl = this.getConfig().getString("statsUrl", statsUrlDefault);
         this.implementation.channelUrl = this.getConfig().getString("channelUrl", channelUrlDefault);
         this.implementation.documentsDir = this.getContext().getFilesDir();
@@ -114,7 +115,7 @@ public class CapacitorUpdaterPlugin extends Plugin implements Application.Activi
         }
         final Application application = (Application) this.getContext().getApplicationContext();
         application.registerActivityLifecycleCallbacks(this);
-        this.onActivityStarted(this.getActivity());
+        // this.onActivityStarted(this.getActivity());
         this._checkCancelDelay(true);
     }
 
